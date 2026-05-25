@@ -1,21 +1,130 @@
-<html>
-<head><title>Terms of Service - Midnight Tales</title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — Midnight Tales</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a26;
+      --border: #2a2a3d; --accent: #7c3aed; --accent2: #a855f7;
+      --text: #e2e8f0; --muted: #94a3b8; --radius: 12px;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 2rem;
+      background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent2); }
+    .nav-back { color: var(--muted); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.35rem; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+
+    .page-wrap { max-width: 760px; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+
+    .page-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.6rem; }
+    .page-title { font-size: 2.25rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .page-meta { color: var(--muted); font-size: 0.875rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+
+    .doc-section { margin-bottom: 2.25rem; }
+    .doc-section h2 {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text);
+    }
+    .doc-section h2::before {
+      content: ''; display: block; width: 3px; height: 1.1em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 2px; flex-shrink: 0;
+    }
+    .doc-section p { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+    footer { background: var(--surface2); border-top: 1px solid var(--border); padding: 1.75rem 2rem; }
+    .footer-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-inner span { color: var(--muted); font-size: 0.8rem; }
+    .footer-links { display: flex; gap: 1.25rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+</head>
 <body>
-<h1>Terms of Service</h1>
-<p><strong>Midnight Tales</strong></p>
-<p>Last updated: April 2026</p>
-<p>By using Midnight Tales ("the App"), you agree to the following terms and conditions.</p>
-<h2>1. Service Description</h2>
-<p>Midnight Tales is a content creation application that creates and publishes original short-form video content to social media platforms including TikTok.</p>
-<h2>2. User Obligations</h2>
-<p>Users must comply with all applicable laws and platform community guidelines when using the App. All content published through the App must be original and not infringe on third-party rights.</p>
-<h2>3. Data Collection</h2>
-<p>The App collects only the minimum data required for authentication and content publishing, including OAuth access tokens and account identifiers.</p>
-<h2>4. Limitation of Liability</h2>
-<p>The App is provided "as is" without warranties of any kind. We are not liable for any damages arising from the use of the App.</p>
-<h2>5. Changes to Terms</h2>
-<p>We reserve the right to modify these terms at any time. Continued use of the App constitutes acceptance of updated terms.</p>
-<h2>6. Contact</h2>
-<p>For questions regarding these terms, contact us at tmightnight@gmail.com</p>
+
+  <nav>
+    <a href="index.html" class="logo">🌙 Midnight <span>Tales</span></a>
+    <a href="index.html" class="nav-back">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Home
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-label">Legal</div>
+    <h1 class="page-title">Terms of Service</h1>
+    <p class="page-meta">Midnight Tales &nbsp;·&nbsp; Last updated: April 2026</p>
+
+    <div class="doc-section">
+      <p>By accessing or using Midnight Tales ("the App"), you agree to be bound by these Terms of Service. Please read them carefully before using the platform.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>1. Service Description</h2>
+      <p>Midnight Tales is a content creation application that generates and publishes original short-form mystery story videos to social media platforms, including TikTok, on behalf of connected user accounts.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>2. User Obligations</h2>
+      <p>You must comply with all applicable laws and platform community guidelines when using the App. All content published through the App to your TikTok account must be original and must not infringe on third-party intellectual property rights.</p>
+      <p>You are solely responsible for the content published to your social media accounts through the App. You agree not to use the App to publish content that is illegal, harmful, deceptive, or in violation of TikTok's terms of service.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>3. TikTok Account Authorization</h2>
+      <p>Midnight Tales connects to your TikTok account via TikTok's official OAuth 2.0 authorization flow. By connecting your account, you grant Midnight Tales permission to publish video content on your behalf, subject to the scopes you approve during the authorization process.</p>
+      <p>You may revoke this authorization at any time through your TikTok account settings. Revocation does not affect any content already published.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>4. Data Collection</h2>
+      <p>The App collects only the minimum data required for authentication and content publishing, including OAuth access tokens and TikTok account identifiers. We do not collect, store, or sell your personal data for advertising or third-party purposes. Please see our <a href="privacy.html" style="color:var(--accent2);">Privacy Policy</a> for full details.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>5. Intellectual Property</h2>
+      <p>AI-generated stories and videos produced by the App are provided for your use. You retain ownership of your TikTok account and any content you publish. Midnight Tales retains rights to its underlying software, models, and platform.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>6. Limitation of Liability</h2>
+      <p>The App is provided "as is" without warranties of any kind, express or implied. Midnight Tales is not liable for any direct, indirect, incidental, or consequential damages arising from the use of the App, including but not limited to account suspension, content removal, or loss of data.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>7. Changes to Terms</h2>
+      <p>We reserve the right to modify these Terms at any time. Continued use of the App after changes are posted constitutes your acceptance of the updated Terms. We will endeavour to notify users of material changes via email where possible.</p>
+    </div>
+
+    <div class="doc-section">
+      <h2>6. Contact</h2>
+      <p>For questions or concerns regarding these Terms, contact us at <a href="mailto:tmightnight@gmail.com" style="color:var(--accent2);">tmightnight@gmail.com</a>.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 Midnight Tales. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="mailto:tmightnight@gmail.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Video — Midnight Tales</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a26;
+      --border: #2a2a3d; --accent: #7c3aed; --accent2: #a855f7;
+      --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
+      --text: #e2e8f0; --muted: #94a3b8; --radius: 10px;
+      --sidebar-w: 240px; --header-h: 60px;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── HEADER (shared) ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.25rem; z-index: 200;
+    }
+    .h-left { display: flex; align-items: center; gap: 0.85rem; }
+    .logo { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; white-space: nowrap; }
+    .logo span { color: var(--accent2); }
+    .h-divider { width: 1px; height: 1.25rem; background: var(--border); }
+    .h-title { font-size: 0.85rem; color: var(--muted); }
+    .h-right { display: flex; align-items: center; gap: 0.75rem; }
+    .avatar-chip { display: flex; align-items: center; gap: 0.55rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 0.3rem 0.85rem 0.3rem 0.35rem; }
+    .avatar { width: 1.65rem; height: 1.65rem; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+    .avatar-chip span { font-size: 0.82rem; font-weight: 600; }
+    .btn-logout { display: flex; align-items: center; gap: 0.35rem; background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.38rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
+      position: fixed; top: var(--header-h); bottom: 0; left: 0;
+      overflow-y: auto; display: flex; flex-direction: column; padding: 1.25rem 0;
+    }
+    .sb-section { padding: 0 0.75rem; margin-bottom: 1.25rem; }
+    .sb-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.65rem; border-radius: 8px;
+      color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; cursor: pointer;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(124,58,237,0.15); color: var(--accent2); }
+    .nav-item svg { flex-shrink: 0; opacity: 0.75; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; }
+    .sb-footer { margin-top: auto; padding: 0 0.75rem 0.75rem; }
+    .connected-pill { display: flex; align-items: center; gap: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.85rem; }
+    .tiktok-icon { width: 1.75rem; height: 1.75rem; background: #010101; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cp-info { flex: 1; min-width: 0; }
+    .cp-name { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cp-status { font-size: 0.68rem; color: var(--green); display: flex; align-items: center; gap: 0.3rem; margin-top: 0.1rem; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* ── MAIN ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; padding: 1.75rem; max-width: calc(100% - var(--sidebar-w)); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem; }
+    .back-link { display: flex; align-items: center; gap: 0.35rem; color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--text); }
+    .page-title { font-size: 1.4rem; font-weight: 700; }
+
+    /* ── TWO COL ── */
+    .create-grid { display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; align-items: start; }
+    @media (max-width: 1100px) { .create-grid { grid-template-columns: 1fr; } }
+
+    /* ── CARD ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .card-title { font-size: 0.9rem; font-weight: 700; }
+    .card-body { padding: 1.25rem; }
+
+    /* ── FORM ── */
+    .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .form-select, .form-input {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      padding: 0.6rem 0.85rem; border-radius: 8px; font-size: 0.875rem; font-family: inherit;
+      appearance: none; -webkit-appearance: none; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem;
+    }
+    .form-select:focus, .form-input:focus { border-color: var(--accent); }
+
+    /* Duration slider */
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+    .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 999px; background: var(--border); outline: none; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); cursor: pointer; box-shadow: 0 0 8px rgba(124,58,237,0.5); }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); }
+    .slider-value { text-align: center; font-size: 0.85rem; font-weight: 700; color: var(--accent2); }
+
+    /* Section divider */
+    .form-section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 1.25rem 0 0.85rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+    /* Buttons */
+    .btn-generate {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.55rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: none;
+      padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.925rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s; margin-top: 0.5rem;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+    }
+    .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-generate.loading { opacity: 0.7; pointer-events: none; }
+
+    .form-hint { font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; margin-top: 0.6rem; }
+
+    /* ── RIGHT COL: PREVIEW ── */
+    .preview-placeholder {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 3rem 1.5rem; text-align: center; color: var(--muted);
+    }
+    .preview-placeholder p { font-size: 0.875rem; margin-top: 0.5rem; }
+
+    /* Preview populated */
+    .preview-section { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .story-text-box {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem; font-size: 0.85rem; line-height: 1.65; color: var(--text);
+      max-height: 180px; overflow-y: auto;
+    }
+    .story-text-box::-webkit-scrollbar { width: 4px; }
+    .story-text-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+    .scenes { display: flex; flex-direction: column; gap: 0.6rem; }
+    .scene { display: flex; gap: 0.75rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.85rem; align-items: flex-start; }
+    .scene-num { width: 1.4rem; height: 1.4rem; border-radius: 50%; background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.4); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: var(--accent2); flex-shrink: 0; margin-top: 0.05rem; }
+    .scene-text { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+    .scene-text strong { color: var(--text); }
+
+    .hashtags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag { background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.3); color: var(--accent2); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    .caption-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 0.9rem; font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+
+    /* Publish actions */
+    .publish-actions { display: flex; flex-direction: column; gap: 0.65rem; }
+    .btn-publish-tiktok {
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      background: #010101; color: #fff; border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.8rem 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.4); width: 100%; text-decoration: none;
+    }
+    .btn-publish-tiktok:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+    .btn-save-draft {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 0.7rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: border-color 0.2s, color 0.2s; width: 100%;
+    }
+    .btn-save-draft:hover { border-color: var(--muted); color: var(--text); }
+
+    /* Spinner */
+    .spinner { width: 1rem; height: 1rem; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-generate.loading .spinner { display: block; }
+    .btn-generate.loading .btn-text { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; max-width: 100%; } }
+    @media (max-width: 600px) { .main { padding: 1rem; } .form-grid2 { grid-template-columns: 1fr; } .h-title { display: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="h-left">
+      <a href="index.html" class="logo">🌙 Midnight <span>Tales</span></a>
+      <div class="h-divider"></div>
+      <span class="h-title">Create Video</span>
+    </div>
+    <div class="h-right">
+      <div class="avatar-chip">
+        <div class="avatar">MT</div>
+        <span>@midnight_tales</span>
+      </div>
+      <button class="btn-logout" onclick="window.location.href='index.html'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Menu</div>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          My Videos
+          <span class="nav-badge">47</span>
+        </a>
+        <a class="nav-item active" href="create.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create New
+        </a>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Analytics
+        </a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Settings
+        </a>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Connected Accounts
+        </a>
+      </div>
+      <div class="sb-footer">
+        <div class="connected-pill">
+          <div class="tiktok-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+          </div>
+          <div class="cp-info">
+            <div class="cp-name">@midnight_tales</div>
+            <div class="cp-status"><span class="dot"></span> Connected</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <a href="dashboard.html" class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Dashboard
+        </a>
+        <div class="h-divider" style="height:1rem;"></div>
+        <h1 class="page-title">✍️ Create New Video</h1>
+      </div>
+
+      <div class="create-grid">
+
+        <!-- LEFT: FORM -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Story Settings</span>
+            </div>
+            <div class="card-body">
+
+              <div class="form-group">
+                <label class="form-label">Topic</label>
+                <select class="form-select" id="topic">
+                  <option>🔍 Unexplained Mysteries</option>
+                  <option>📜 Strange Historical Events</option>
+                  <option>🌆 Urban Legends</option>
+                  <option>🏚️ Abandoned Places</option>
+                  <option>🌊 Deep Sea Encounters</option>
+                  <option>🌲 Forest Disappearances</option>
+                  <option>🕯️ Victorian Ghost Stories</option>
+                  <option>🔬 Scientific Experiments Gone Wrong</option>
+                  <option>📷 Haunted Photographs</option>
+                  <option>🚂 Midnight Train Strangers</option>
+                  <option>📖 Cursed Objects</option>
+                  <option>🏔️ Mountain Cabin Isolation</option>
+                  <option>🎭 Secret Identities</option>
+                  <option>👁️ Government Cover-ups</option>
+                </select>
+              </div>
+
+              <div class="form-grid2">
+                <div class="form-group">
+                  <label class="form-label">Story Style</label>
+                  <select class="form-select" id="style">
+                    <option>🔄 Twist Ending</option>
+                    <option>⏸️ Cliffhanger</option>
+                    <option>🧠 Mind-bending</option>
+                    <option>😱 Jump Scare Build-up</option>
+                    <option>🔍 Detective Mystery</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Narrator Voice</label>
+                  <select class="form-select" id="voice">
+                    <option>🎙️ Deep Male</option>
+                    <option>🎙️ Soft Female</option>
+                    <option>🎙️ British Accent</option>
+                    <option>🤖 Neutral AI</option>
+                    <option>🎙️ Dramatic Female</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Duration</label>
+                <div class="slider-wrap">
+                  <input type="range" class="slider" id="duration" min="30" max="60" value="45" step="5" oninput="updateDuration(this.value)">
+                  <div class="slider-labels">
+                    <span>30s</span>
+                    <span class="slider-value" id="dur-val">45s</span>
+                    <span>60s</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section-title">Visual & Audio</div>
+
+              <div class="form-grid2">
+                <div class="form-group">
+                  <label class="form-label">Background Style</label>
+                  <select class="form-select">
+                    <option>🌑 Dark Atmospheric</option>
+                    <option>🌲 Forest & Nature</option>
+                    <option>🏙️ Urban Night</option>
+                    <option>🌊 Ocean & Depths</option>
+                    <option>🕯️ Victorian Interior</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Background Music</label>
+                  <select class="form-select">
+                    <option>🎵 Eerie Ambience</option>
+                    <option>🎵 Suspense Build</option>
+                    <option>🎵 Dark Orchestral</option>
+                    <option>🎵 Minimal Tension</option>
+                    <option>🎵 None</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Custom Prompt (optional)</label>
+                <textarea class="form-input" id="custom-prompt" rows="3" placeholder="Add specific details, character names, locations, or plot elements to include in the story…" style="resize:vertical;line-height:1.5;"></textarea>
+              </div>
+
+              <button class="btn-generate" id="gen-btn" onclick="generateStory()">
+                <div class="spinner" id="spinner"></div>
+                <span class="btn-text">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:0.35rem;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  Generate Story &amp; Video
+                </span>
+              </button>
+              <p class="form-hint">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Generation takes ~45 seconds. Your video will appear in the preview panel.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: PREVIEW -->
+        <div id="preview-col">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📺 Preview</span>
+              <span id="preview-status" style="font-size:0.75rem;color:var(--muted);">Not generated yet</span>
+            </div>
+            <div class="card-body">
+              <div class="preview-placeholder" id="preview-empty">
+                <div style="font-size:2.5rem;margin-bottom:0.5rem;">🎬</div>
+                <p>Fill in the form and click <strong style="color:var(--text);">Generate Story &amp; Video</strong> to see a preview here.</p>
+              </div>
+              <div id="preview-content" style="display:none;">
+                <div class="preview-section">
+
+                  <div>
+                    <div class="form-label" style="margin-bottom:0.5rem;">Generated Story</div>
+                    <div class="story-text-box" id="story-output"></div>
+                  </div>
+
+                  <div>
+                    <div class="form-label" style="margin-bottom:0.5rem;">Scene Breakdown</div>
+                    <div class="scenes" id="scenes-output"></div>
+                  </div>
+
+                  <div>
+                    <div class="form-label" style="margin-bottom:0.5rem;">Caption</div>
+                    <div class="caption-box" id="caption-output"></div>
+                  </div>
+
+                  <div>
+                    <div class="form-label" style="margin-bottom:0.5rem;">Hashtags</div>
+                    <div class="hashtags" id="hashtags-output"></div>
+                  </div>
+
+                  <div class="publish-actions">
+                    <button class="btn-publish-tiktok" onclick="window.location.href='dashboard.html'">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+                      Publish to TikTok
+                    </button>
+                    <button class="btn-save-draft" onclick="window.location.href='dashboard.html'">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                      Save as Draft
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function updateDuration(val) {
+      document.getElementById('dur-val').textContent = val + 's';
+    }
+
+    const stories = {
+      '🔍 Unexplained Mysteries': {
+        text: `In 1987, a geologist named David Paulides documented 47 disappearances in National Parks with one chilling commonality: no trace, no body, no explanation. Children vanished from heavily trafficked trails, only to be found miles away — sometimes in impossible locations. David's files were sealed by the NPS. Last month, a ranger submitted a new case. It matches every pattern exactly. The file number is 48.`,
+        scenes: [
+          { label: 'Scene 1', desc: 'Black screen with white text: "In 1987, something started disappearing people."' },
+          { label: 'Scene 2', desc: 'Aerial drone footage of dense forest at twilight, narrator begins.' },
+          { label: 'Scene 3', desc: 'Close-up of a case file stamped SEALED, camera slowly zooms out.' },
+          { label: 'Scene 4', desc: 'Final title card: "Case #48 was filed last month."' },
+        ],
+        caption: '47 people. No bodies. No explanations. Then case #48 arrived… 🌲',
+        tags: ['#mystery', '#unexplained', '#nationalparks', '#creepy', '#truecrime', '#fyp', '#MidnightTales', '#scary'],
+      },
+      '📜 Strange Historical Events': {
+        text: `On June 30, 1908, something exploded above Siberia with the force of 1,000 nuclear bombs. Trees fell in a radial pattern across 2,000 square kilometres. 80 million trees, flattened. No crater was ever found. No meteorite fragments recovered. The Tunguska event remains the largest impact event in recorded history — and to this day, we don't know what it was.`,
+        scenes: [
+          { label: 'Scene 1', desc: 'Old sepia photograph of fallen Siberian forest panning slowly.' },
+          { label: 'Scene 2', desc: 'Animated map showing the blast radius over modern Russia.' },
+          { label: 'Scene 3', desc: 'Text: "No crater. No fragments. No explanation."' },
+          { label: 'Scene 4', desc: 'Dramatic zoom out from satellite view of Siberia.' },
+        ],
+        caption: 'The largest explosion in recorded history — and we still don\'t know what caused it. 💥',
+        tags: ['#history', '#mystery', '#tunguska', '#unexplained', '#science', '#fyp', '#MidnightTales', '#facts'],
+      },
+    };
+
+    const defaultStory = {
+      text: `She found the photograph in a box her grandmother had hidden beneath the floorboards. In it, a woman stood in front of their house — their exact house — wearing Victorian clothes. The date stamped on the back read 1887. Her grandmother had circled one detail in red pen: the woman's face. It was hers.`,
+      scenes: [
+        { label: 'Scene 1', desc: 'Close-up of dusty photograph being lifted from old wooden box.' },
+        { label: 'Scene 2', desc: 'Split screen: Victorian house photo vs. modern house exterior.' },
+        { label: 'Scene 3', desc: 'Extreme close-up of date stamp: 1887, red ink circle.' },
+        { label: 'Scene 4', desc: 'Match cut to protagonist\'s face, music swells to silence.' },
+      ],
+      caption: 'A photograph from 1887. Her grandmother circled her face with red pen. 📷',
+      tags: ['#mystery', '#scary', '#ghost', '#paranormal', '#storytime', '#fyp', '#MidnightTales', '#horror'],
+    };
+
+    function generateStory() {
+      const btn = document.getElementById('gen-btn');
+      btn.classList.add('loading');
+
+      const topic = document.getElementById('topic').value;
+
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        showPreview(topic);
+      }, 2800);
+    }
+
+    function showPreview(topic) {
+      const data = stories[topic] || defaultStory;
+
+      document.getElementById('story-output').textContent = data.text;
+
+      const scenesEl = document.getElementById('scenes-output');
+      scenesEl.innerHTML = data.scenes.map(s => `
+        <div class="scene">
+          <div class="scene-num">${s.label.split(' ')[1]}</div>
+          <div class="scene-text"><strong>${s.label}:</strong> ${s.desc}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('caption-output').textContent = data.caption;
+
+      document.getElementById('hashtags-output').innerHTML =
+        data.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+      document.getElementById('preview-empty').style.display = 'none';
+      document.getElementById('preview-content').style.display = 'block';
+      document.getElementById('preview-status').textContent = '✅ Ready to publish';
+      document.getElementById('preview-status').style.color = 'var(--green)';
+    }
+  </script>
+
+</body>
+</html>

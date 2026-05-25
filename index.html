@@ -3,375 +3,218 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Midnight Tales — Mystery Stories for TikTok</title>
+  <title>Midnight Tales — Mystery Story Videos for TikTok</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #12121a;
-      --surface2:  #1a1a26;
-      --border:    #2a2a3d;
-      --accent:    #7c3aed;
-      --accent2:   #a855f7;
-      --gold:      #f59e0b;
-      --text:      #e2e8f0;
-      --muted:     #94a3b8;
-      --radius:    12px;
+      --bg:      #0a0a0f;
+      --surface: #12121a;
+      --surface2:#1a1a26;
+      --border:  #2a2a3d;
+      --accent:  #7c3aed;
+      --accent2: #a855f7;
+      --green:   #22c55e;
+      --gold:    #f59e0b;
+      --text:    #e2e8f0;
+      --muted:   #94a3b8;
+      --radius:  12px;
     }
 
     html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(12px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 2rem;
+      background: rgba(10,10,15,0.88); backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-    }
-
+    .nav-logo { display: flex; align-items: center; gap: 0.4rem; font-size: 1.15rem; font-weight: 700; color: var(--text); text-decoration: none; }
     .nav-logo span { color: var(--accent2); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
+    .nav-links { display: flex; align-items: center; gap: 1.75rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 0.75rem; }
+    .btn-ghost { color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+    .btn-tiktok {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      background: #010101; color: #fff;
+      border: 1px solid rgba(255,255,255,0.12); padding: 0.45rem 1.1rem;
+      border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-tiktok:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+    .btn-tiktok svg { flex-shrink: 0; }
 
     /* ── HERO ── */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 1.5rem 4rem;
-      position: relative;
-      overflow: hidden;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 7rem 1.5rem 5rem; position: relative; overflow: hidden;
     }
-
     .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.25) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(168,85,247,0.12) 0%, transparent 60%);
-      pointer-events: none;
+        radial-gradient(ellipse 80% 55% at 50% -5%, rgba(124,58,237,0.28) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 85% 85%, rgba(168,85,247,0.1) 0%, transparent 60%);
     }
-
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(124,58,237,0.15);
-      border: 1px solid rgba(124,58,237,0.4);
-      color: var(--accent2);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.4);
+      color: var(--accent2); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.3rem 0.85rem; border-radius: 999px; margin-bottom: 1.5rem;
     }
-
     .hero h1 {
-      font-size: clamp(2.8rem, 8vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.25rem;
-      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(2.4rem, 7vw, 5rem); font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.025em; margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #fff 25%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .hero-tagline {
-      font-size: clamp(1.1rem, 3vw, 1.4rem);
-      color: var(--muted);
-      max-width: 540px;
-      margin: 0 auto 2.5rem;
+    .hero-sub { font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted); max-width: 520px; margin: 0 auto 2.5rem; }
+    .hero-buttons { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; padding: 0.8rem 1.75rem;
+      border-radius: 10px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
     }
-
-    .btn-tiktok {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      background: linear-gradient(135deg, #010101 0%, #1a1a1a 100%);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 0.9rem 2rem;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-tiktok-lg {
+      display: inline-flex; align-items: center; gap: 0.65rem;
+      background: #010101; color: #fff;
+      border: 1px solid rgba(255,255,255,0.15); padding: 0.8rem 1.75rem;
+      border-radius: 10px; font-size: 1rem; font-weight: 600; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-
-    .btn-tiktok:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      border-color: rgba(255,255,255,0.25);
-    }
-
-    .btn-tiktok svg { flex-shrink: 0; }
-
-    .hero-sub {
-      margin-top: 1.25rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
+    .btn-tiktok-lg:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+    .hero-note { margin-top: 1.25rem; font-size: 0.78rem; color: var(--muted); }
     .hero-scroll {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+      color: var(--muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
       animation: bounce 2s ease-in-out infinite;
     }
-
     @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(6px); }
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(6px); }
     }
 
-    /* ── SECTION WRAPPER ── */
+    /* ── SECTIONS ── */
     section { padding: 6rem 1.5rem; }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 0.75rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 1rem;
-    }
-
-    .section-desc {
-      color: var(--muted);
-      max-width: 520px;
-      font-size: 1.05rem;
-    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.6rem; }
+    .section-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+    .section-desc { color: var(--muted); font-size: 1.05rem; max-width: 500px; }
+    .section-centered { text-align: center; }
+    .section-centered .section-desc { margin: 0 auto; }
 
     /* ── HOW IT WORKS ── */
     #how-it-works { background: var(--surface); }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2rem;
-      margin-top: 3.5rem;
-      position: relative;
-    }
-
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 2rem; margin-top: 3.5rem; position: relative; }
     .steps::before {
-      content: '';
-      position: absolute;
-      top: 2.5rem;
-      left: calc(16.666% + 1rem);
-      right: calc(16.666% + 1rem);
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      opacity: 0.4;
+      content: ''; position: absolute; top: 2.4rem;
+      left: calc(16.666% + 1rem); right: calc(16.666% + 1rem);
+      height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0.35;
     }
-
-    .step {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      position: relative;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .step:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-    }
-
-    .step-number {
-      width: 2.8rem;
-      height: 2.8rem;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 1.25rem;
-      box-shadow: 0 0 20px rgba(124,58,237,0.4);
-    }
-
-    .step h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .step p { color: var(--muted); font-size: 0.95rem; }
-
-    .step-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
+    .step { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: border-color 0.2s, transform 0.2s; }
+    .step:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .step-num { width: 2.6rem; height: 2.6rem; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 800; margin-bottom: 1rem; box-shadow: 0 0 18px rgba(124,58,237,0.4); }
+    .step-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .step p { color: var(--muted); font-size: 0.9rem; }
 
     /* ── FEATURES ── */
     #features { background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px,1fr)); gap: 1.25rem; margin-top: 3rem; }
+    .feat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; transition: border-color 0.2s, transform 0.2s; }
+    .feat:hover { border-color: var(--accent2); transform: translateY(-3px); }
+    .feat-icon { font-size: 1.75rem; margin-bottom: 0.85rem; }
+    .feat h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feat p { color: var(--muted); font-size: 0.875rem; }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 3.5rem;
+    /* ── PRICING ── */
+    #pricing { background: var(--surface); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px,1fr)); gap: 1.5rem; margin-top: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .plan {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem;
+      display: flex; flex-direction: column; transition: border-color 0.2s, transform 0.2s;
     }
-
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      transition: border-color 0.2s, transform 0.2s;
+    .plan:hover { transform: translateY(-4px); }
+    .plan.popular { border-color: var(--accent); position: relative; }
+    .popular-tag {
+      position: absolute; top: -0.75rem; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.25rem 0.85rem; border-radius: 999px; white-space: nowrap;
     }
-
-    .feature-card:hover {
-      border-color: var(--accent2);
-      transform: translateY(-3px);
+    .plan-name { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .plan-price { font-size: 2.75rem; font-weight: 800; line-height: 1; margin-bottom: 0.3rem; }
+    .plan-price sup { font-size: 1.25rem; font-weight: 700; vertical-align: super; }
+    .plan-period { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .plan-desc { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; flex: 1; }
+    .plan-features li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.875rem; }
+    .plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .plan-features li.dim { color: var(--muted); }
+    .plan-features li.dim::before { content: '—'; color: var(--border); }
+    .btn-plan {
+      width: 100%; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; border: none; transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none; display: flex; align-items: center; justify-content: center;
     }
+    .btn-plan-free { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+    .btn-plan-free:hover { border-color: var(--muted); }
+    .btn-plan-pro { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 20px rgba(124,58,237,0.35); }
+    .btn-plan-pro:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    .feature-icon {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--bg); }
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.25rem; margin-top: 3rem; }
+    .testi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem; }
+    .testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 0.85rem; letter-spacing: 0.05em; }
+    .testi-text { font-size: 0.9rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.1rem; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 0.65rem; }
+    .testi-avatar { width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .testi-name { font-size: 0.875rem; font-weight: 700; }
+    .testi-handle { font-size: 0.75rem; color: var(--muted); }
 
-    .feature-card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p { color: var(--muted); font-size: 0.9rem; }
-
-    /* ── CTA ── */
-    #cta {
-      background: var(--surface);
-      text-align: center;
-    }
-
-    #cta .section-title { margin-bottom: 1.5rem; }
-    #cta .section-desc { margin: 0 auto 2.5rem; text-align: center; }
+    /* ── BOTTOM CTA ── */
+    #cta { background: var(--surface); text-align: center; }
+    #cta .section-title { margin-bottom: 1.25rem; }
+    #cta .section-desc { margin: 0 auto 2.25rem; }
 
     /* ── FOOTER ── */
-    footer {
-      background: var(--surface2);
-      border-top: 1px solid var(--border);
-      padding: 2.5rem 1.5rem;
-    }
-
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.25rem;
-    }
-
-    .footer-logo {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .footer-logo span { color: var(--accent2); }
-
-    .footer-copy {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 0.25rem;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      list-style: none;
-    }
-
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover { color: var(--text); }
+    footer { background: var(--surface2); border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 2rem; }
+    .footer-brand .logo-text { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .footer-brand .logo-text span { color: var(--accent2); }
+    .footer-brand p { color: var(--muted); font-size: 0.8rem; max-width: 200px; }
+    .footer-cols { display: flex; gap: 3rem; flex-wrap: wrap; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+    .footer-col a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom { max-width: 1100px; margin: 1.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+    .footer-bottom span { color: var(--muted); font-size: 0.8rem; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      nav { padding: 1rem; }
+    @media (max-width: 768px) {
+      nav { padding: 0.9rem 1rem; }
       .nav-links { display: none; }
       .steps::before { display: none; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-inner { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .hero-buttons { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-tiktok-lg { justify-content: center; }
     }
   </style>
 </head>
@@ -379,38 +222,44 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="nav-logo">🌙 Midnight <span>Tales</span></a>
+    <a href="index.html" class="nav-logo">🌙 Midnight <span>Tales</span></a>
     <ul class="nav-links">
       <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
       <li><a href="terms.html">Terms</a></li>
       <li><a href="privacy.html">Privacy</a></li>
     </ul>
+    <div class="nav-cta">
+      <a href="dashboard.html" class="btn-ghost">Dashboard</a>
+      <a class="btn-tiktok"
+        href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+        Login with TikTok
+      </a>
+    </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-badge">✦ Now live on TikTok</div>
-    <h1>Midnight Tales</h1>
-    <p class="hero-tagline">Create and publish original mystery story videos to TikTok — automatically, every night.</p>
-
-    <a
-      class="btn-tiktok"
-      href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth"
-    >
-      <!-- TikTok logo -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/>
-      </svg>
-      Login with TikTok
-    </a>
-    <p class="hero-sub">Secure OAuth 2.0 — we never store your TikTok password</p>
-
+    <h1>Create mystery story videos<br>for TikTok in minutes</h1>
+    <p class="hero-sub">AI-generated scripts, cinematic voiceover, auto-captions, and one-click publishing — all in one place.</p>
+    <div class="hero-buttons">
+      <a href="dashboard.html" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Get Started Free
+      </a>
+      <a class="btn-tiktok-lg"
+        href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+        Login with TikTok
+      </a>
+    </div>
+    <p class="hero-note">Free plan available · No credit card required · OAuth 2.0 secure</p>
     <div class="hero-scroll">
       <span>scroll</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 5v14M5 12l7 7 7-7"/>
-      </svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
     </div>
   </section>
 
@@ -419,28 +268,25 @@
     <div class="container">
       <span class="section-label">Process</span>
       <h2 class="section-title">How It Works</h2>
-      <p class="section-desc">Three simple steps from idea to published TikTok video — fully automated.</p>
-
+      <p class="section-desc">Three steps from zero to published TikTok video — no editing skills required.</p>
       <div class="steps">
         <div class="step">
-          <div class="step-number">1</div>
+          <div class="step-num">1</div>
+          <div class="step-icon">🔗</div>
+          <h3>Connect TikTok</h3>
+          <p>Securely link your TikTok account via OAuth 2.0 in one click. We never see your password — only the permissions you approve.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
           <div class="step-icon">✍️</div>
           <h3>Create Stories</h3>
-          <p>Our AI crafts original mystery tales with compelling narratives, twist endings, and atmospheric tension — every night at midnight.</p>
+          <p>Pick a mystery topic, choose your style and voice, then let our AI write the script, record the narration, and build the video.</p>
         </div>
-
         <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-icon">🎬</div>
-          <h3>Generate Videos</h3>
-          <p>Each story is automatically turned into a cinematic short video: voiceover, background music, captions, and eerie visuals included.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
+          <div class="step-num">3</div>
           <div class="step-icon">🚀</div>
-          <h3>Publish to TikTok</h3>
-          <p>Videos are posted directly to your TikTok account via the official API — no manual uploads, no hassle, just consistent content.</p>
+          <h3>Auto-publish</h3>
+          <p>Hit publish and the video goes live on TikTok instantly via the official API. Schedule posts or let them go out every night at midnight.</p>
         </div>
       </div>
     </div>
@@ -450,82 +296,196 @@
   <section id="features">
     <div class="container">
       <span class="section-label">Features</span>
-      <h2 class="section-title">Everything You Need</h2>
-      <p class="section-desc">Built for mystery lovers who want a hands-off content pipeline.</p>
-
+      <h2 class="section-title">Everything built in</h2>
+      <p class="section-desc">A complete pipeline from story idea to published video — nothing to install, no editing required.</p>
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🌙</div>
-          <h3>Nightly Automation</h3>
-          <p>New mystery content published automatically every night — keep your audience coming back without lifting a finger.</p>
+        <div class="feat">
+          <div class="feat-icon">🤖</div>
+          <h3>AI-Powered Story Generation</h3>
+          <p>Original mystery scripts written by AI — twist endings, cliffhangers, psychological thrillers. Never the same story twice.</p>
         </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
-          <h3>AI Story Generation</h3>
-          <p>Original, never-repeated mystery stories crafted by AI with rich characters, suspenseful plots, and satisfying reveals.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🎙️</div>
+        <div class="feat">
+          <div class="feat-icon">🎙️</div>
           <h3>Professional Voiceover</h3>
-          <p>Atmospheric text-to-speech narration that sets the perfect mood for each mysterious tale.</p>
+          <p>Choose from multiple narrator voices — deep male, soft female, British accent — with atmospheric pacing and tone.</p>
         </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🎵</div>
+        <div class="feat">
+          <div class="feat-icon">📝</div>
+          <h3>Auto-Captions</h3>
+          <p>Burned-in captions synced to the narration, styled for TikTok — keeps viewers hooked even with the sound off.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">📱</div>
+          <h3>Multi-Platform Publishing</h3>
+          <p>Publish to TikTok with one click. Support for additional platforms coming soon — create once, post everywhere.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">🎵</div>
           <h3>Cinematic Soundscapes</h3>
-          <p>Each video comes with carefully selected ambient music and sound effects to immerse your viewers.</p>
+          <p>Background music and sound effects matched to each story's mood — eerie, suspenseful, supernatural, or psychological.</p>
         </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📱</div>
-          <h3>TikTok-Native Format</h3>
-          <p>Videos are optimised for TikTok's vertical format, aspect ratio, and captioning standards out of the box.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Secure OAuth Login</h3>
-          <p>Connect your TikTok account securely using official OAuth 2.0 — your credentials never touch our servers.</p>
+        <div class="feat">
+          <div class="feat-icon">📅</div>
+          <h3>Nightly Scheduling</h3>
+          <p>Set it and forget it. Midnight Tales auto-publishes a new story every night so your account stays active around the clock.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section id="cta">
-    <div class="container">
-      <span class="section-label">Get Started</span>
-      <h2 class="section-title">Ready to Tell Darker Stories?</h2>
-      <p class="section-desc">Connect your TikTok account and let Midnight Tales handle the rest.</p>
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container section-centered">
+      <span class="section-label">Pricing</span>
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-desc">Start free. Upgrade when you're ready to scale.</p>
+      <div class="pricing-grid">
 
-      <a
-        class="btn-tiktok"
-        href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/>
-        </svg>
-        Login with TikTok
-      </a>
+        <!-- FREE -->
+        <div class="plan">
+          <div class="plan-name">Free</div>
+          <div class="plan-price">$0</div>
+          <div class="plan-period">forever free</div>
+          <div class="plan-desc">Perfect for getting started with mystery content creation.</div>
+          <ul class="plan-features">
+            <li>3 videos per day</li>
+            <li>All story topics</li>
+            <li>2 narrator voices</li>
+            <li>Auto-captions</li>
+            <li>TikTok publishing</li>
+            <li class="dim">Priority generation</li>
+            <li class="dim">Custom scheduling</li>
+            <li class="dim">Analytics dashboard</li>
+          </ul>
+          <a href="dashboard.html" class="btn-plan btn-plan-free">Get Started Free</a>
+        </div>
+
+        <!-- PRO -->
+        <div class="plan popular">
+          <div class="popular-tag">Most Popular</div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price"><sup>$</sup>9</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-desc">For serious creators who want unlimited content and full control.</div>
+          <ul class="plan-features">
+            <li>Unlimited videos</li>
+            <li>All story topics</li>
+            <li>All narrator voices</li>
+            <li>Auto-captions</li>
+            <li>TikTok publishing</li>
+            <li>Priority generation</li>
+            <li>Custom scheduling</li>
+            <li>Analytics dashboard</li>
+          </ul>
+          <a href="dashboard.html" class="btn-plan btn-plan-pro">Start Pro — $9/mo</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container section-centered">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-title">Creators love Midnight Tales</h2>
+      <p class="section-desc">Join thousands of storytellers growing their TikTok audience every night.</p>
+      <div class="testi-grid" style="margin-top:3rem;">
+
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"I went from zero videos to posting every single night without any effort. My follower count tripled in six weeks. Midnight Tales is genuinely magic for mystery content creators."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(124,58,237,0.2);">👤</div>
+            <div>
+              <div class="testi-name">Sarah K.</div>
+              <div class="testi-handle">@spooky.sarah · 28K followers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"The AI stories actually sound like they were written by a human. The voiceover is creepy in the best way. I've had three videos hit 100K views and I barely did anything."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(168,85,247,0.2);">👤</div>
+            <div>
+              <div class="testi-name">Marcus T.</div>
+              <div class="testi-handle">@tales.at.midnight · 41K followers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi">
+          <div class="testi-stars">★★★★☆</div>
+          <p class="testi-text">"Setup took less than five minutes. Connected TikTok, picked a topic, clicked generate. My first video got 8,000 views overnight. The scheduling feature alone is worth the Pro plan."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:rgba(59,130,246,0.2);">👤</div>
+            <div>
+              <div class="testi-name">Priya N.</div>
+              <div class="testi-handle">@night.stories.co · 15K followers</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section id="cta">
+    <div class="container section-centered">
+      <span class="section-label">Get Started</span>
+      <h2 class="section-title">Ready to tell darker stories?</h2>
+      <p class="section-desc">Connect your TikTok account and publish your first mystery video tonight.</p>
+      <div class="hero-buttons" style="margin-top:2rem;">
+        <a href="dashboard.html" class="btn-primary">
+          Get Started Free
+        </a>
+        <a class="btn-tiktok-lg"
+          href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+          Login with TikTok
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <div>
-        <div class="footer-logo">🌙 Midnight <span>Tales</span></div>
-        <div class="footer-copy">&copy; 2026 Midnight Tales. All rights reserved.</div>
-        <div class="footer-copy" style="margin-top:0.25rem;">Contact: <a href="mailto:tmightnight@gmail.com" style="color:var(--accent2);text-decoration:none;">tmightnight@gmail.com</a></div>
+      <div class="footer-brand">
+        <div class="logo-text">🌙 Midnight <span>Tales</span></div>
+        <p>Create and publish mystery story videos to TikTok automatically.</p>
       </div>
-      <ul class="footer-links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="terms.html">Terms of Service</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-      </ul>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:tmightnight@gmail.com">tmightnight@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Midnight Tales. All rights reserved.</span>
+      <span>Built for mystery lovers.</span>
     </div>
   </footer>
 
