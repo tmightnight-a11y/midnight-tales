@@ -1,15 +1,533 @@
-<html>
-<head><title>Midnight Tales</title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Midnight Tales — Mystery Stories for TikTok</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #12121a;
+      --surface2:  #1a1a26;
+      --border:    #2a2a3d;
+      --accent:    #7c3aed;
+      --accent2:   #a855f7;
+      --gold:      #f59e0b;
+      --text:      #e2e8f0;
+      --muted:     #94a3b8;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--accent2); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(168,85,247,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.4);
+      color: var(--accent2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .btn-tiktok {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: linear-gradient(135deg, #010101 0%, #1a1a1a 100%);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    .btn-tiktok:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .btn-tiktok svg { flex-shrink: 0; }
+
+    .hero-sub {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section { padding: 6rem 1.5rem; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 1.05rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #how-it-works { background: var(--surface); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 3.5rem;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 2.5rem;
+      left: calc(16.666% + 1rem);
+      right: calc(16.666% + 1rem);
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0.4;
+    }
+
+    .step {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .step:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .step-number {
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 0 20px rgba(124,58,237,0.4);
+    }
+
+    .step h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p { color: var(--muted); font-size: 0.95rem; }
+
+    .step-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── FEATURES ── */
+    #features { background: var(--bg); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p { color: var(--muted); font-size: 0.9rem; }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--surface);
+      text-align: center;
+    }
+
+    #cta .section-title { margin-bottom: 1.5rem; }
+    #cta .section-desc { margin: 0 auto 2.5rem; text-align: center; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .footer-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .footer-logo span { color: var(--accent2); }
+
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem; }
+      .nav-links { display: none; }
+      .steps::before { display: none; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
 <body>
-<h1>Midnight Tales</h1>
-<p>Midnight Tales creates and publishes original short mystery story videos to social media platforms.</p>
-<p>We tell the stories that don't make sense. New tales every night.</p>
-<h2>Links</h2>
-<ul>
-<li><a href="terms.html">Terms of Service</a></li>
-<li><a href="privacy.html">Privacy Policy</a></li>
-</ul>
-<h2>Contact</h2>
-<p>Email: tmightnight@gmail.com</p>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">🌙 Midnight <span>Tales</span></a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="terms.html">Terms</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">✦ Now live on TikTok</div>
+    <h1>Midnight Tales</h1>
+    <p class="hero-tagline">Create and publish original mystery story videos to TikTok — automatically, every night.</p>
+
+    <a
+      class="btn-tiktok"
+      href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth"
+    >
+      <!-- TikTok logo -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/>
+      </svg>
+      Login with TikTok
+    </a>
+    <p class="hero-sub">Secure OAuth 2.0 — we never store your TikTok password</p>
+
+    <div class="hero-scroll">
+      <span>scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="container">
+      <span class="section-label">Process</span>
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-desc">Three simple steps from idea to published TikTok video — fully automated.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-icon">✍️</div>
+          <h3>Create Stories</h3>
+          <p>Our AI crafts original mystery tales with compelling narratives, twist endings, and atmospheric tension — every night at midnight.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-icon">🎬</div>
+          <h3>Generate Videos</h3>
+          <p>Each story is automatically turned into a cinematic short video: voiceover, background music, captions, and eerie visuals included.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-icon">🚀</div>
+          <h3>Publish to TikTok</h3>
+          <p>Videos are posted directly to your TikTok account via the official API — no manual uploads, no hassle, just consistent content.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-desc">Built for mystery lovers who want a hands-off content pipeline.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌙</div>
+          <h3>Nightly Automation</h3>
+          <p>New mystery content published automatically every night — keep your audience coming back without lifting a finger.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Story Generation</h3>
+          <p>Original, never-repeated mystery stories crafted by AI with rich characters, suspenseful plots, and satisfying reveals.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎙️</div>
+          <h3>Professional Voiceover</h3>
+          <p>Atmospheric text-to-speech narration that sets the perfect mood for each mysterious tale.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎵</div>
+          <h3>Cinematic Soundscapes</h3>
+          <p>Each video comes with carefully selected ambient music and sound effects to immerse your viewers.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>TikTok-Native Format</h3>
+          <p>Videos are optimised for TikTok's vertical format, aspect ratio, and captioning standards out of the box.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Secure OAuth Login</h3>
+          <p>Connect your TikTok account securely using official OAuth 2.0 — your credentials never touch our servers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="container">
+      <span class="section-label">Get Started</span>
+      <h2 class="section-title">Ready to Tell Darker Stories?</h2>
+      <p class="section-desc">Connect your TikTok account and let Midnight Tales handle the rest.</p>
+
+      <a
+        class="btn-tiktok"
+        href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/>
+        </svg>
+        Login with TikTok
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">🌙 Midnight <span>Tales</span></div>
+        <div class="footer-copy">&copy; 2026 Midnight Tales. All rights reserved.</div>
+        <div class="footer-copy" style="margin-top:0.25rem;">Contact: <a href="mailto:tmightnight@gmail.com" style="color:var(--accent2);text-decoration:none;">tmightnight@gmail.com</a></div>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </footer>
+
 </body>
 </html>

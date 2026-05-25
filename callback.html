@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Midnight Tales — Authorization</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #12121a;
+      --surface2: #1a1a26;
+      --border:   #2a2a3d;
+      --accent:   #7c3aed;
+      --accent2:  #a855f7;
+      --green:    #22c55e;
+      --red:      #ef4444;
+      --text:     #e2e8f0;
+      --muted:    #94a3b8;
+      --radius:   12px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SUCCESS STATE ── */
+    .icon-wrap {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.2rem;
+    }
+
+    .icon-wrap.success {
+      background: rgba(34,197,94,0.12);
+      border: 2px solid rgba(34,197,94,0.4);
+    }
+
+    .icon-wrap.error {
+      background: rgba(239,68,68,0.12);
+      border: 2px solid rgba(239,68,68,0.4);
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── CODE BOX ── */
+    .code-section {
+      text-align: left;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .code-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.6rem;
+    }
+
+    .code-value {
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.82rem;
+      color: var(--text);
+      word-break: break-all;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      position: relative;
+    }
+
+    .copy-btn {
+      margin-top: 0.75rem;
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .copy-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .copy-btn:active { transform: scale(0.98); }
+    .copy-btn.copied { background: var(--green); }
+
+    /* ── INSTRUCTIONS ── */
+    .instructions {
+      background: rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .instructions h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--accent2);
+    }
+
+    .instructions ol {
+      padding-left: 1.25rem;
+      color: var(--muted);
+      font-size: 0.875rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .instructions li strong { color: var(--text); }
+
+    /* ── FOOTER LINK ── */
+    .back-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    /* ── BRANDING ── */
+    .brand {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand span { color: var(--accent2); }
+
+    /* ── PARAMS TABLE (DEBUG) ── */
+    .params-section {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .params-table td {
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .params-table td:first-child {
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      width: 30%;
+    }
+
+    .params-table td:last-child {
+      color: var(--text);
+      font-family: monospace;
+      font-size: 0.78rem;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="brand">🌙 Midnight <span>Tales</span></a>
+
+  <div class="card" id="card">
+    <!-- Content injected by JS below -->
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code   = params.get('code');
+    const state  = params.get('state');
+    const error  = params.get('error');
+    const errDesc = params.get('error_description');
+    const card   = document.getElementById('card');
+
+    if (error) {
+      // ── ERROR STATE ──
+      card.innerHTML = `
+        <div class="icon-wrap error">❌</div>
+        <h1>Authorization Failed</h1>
+        <p class="subtitle">${errDesc ? escHtml(errDesc) : 'TikTok returned an error during authorization.'}</p>
+
+        <div class="code-section">
+          <div class="code-label">Error Code</div>
+          <div class="code-value">${escHtml(error)}</div>
+        </div>
+
+        <div class="instructions">
+          <h3>What to do</h3>
+          <ol>
+            <li>Close this window and try again</li>
+            <li>Make sure you approve all requested permissions</li>
+            <li>Contact <strong>tmightnight@gmail.com</strong> if the issue persists</li>
+          </ol>
+        </div>
+
+        <a class="back-link" href="index.html">← Back to Midnight Tales</a>
+      `;
+    } else if (code) {
+      // ── SUCCESS STATE ──
+      card.innerHTML = `
+        <div class="icon-wrap success">✅</div>
+        <h1>Authorization Successful</h1>
+        <p class="subtitle">TikTok has granted access. You can now close this window.</p>
+
+        <div class="code-section">
+          <div class="code-label">Authorization Code</div>
+          <div class="code-value" id="auth-code">${escHtml(code)}</div>
+          <button class="copy-btn" id="copy-btn" onclick="copyCode()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Code
+          </button>
+        </div>
+
+        <div class="instructions">
+          <h3>Next Steps</h3>
+          <ol>
+            <li><strong>Copy the code</strong> above using the button</li>
+            <li>Return to the <strong>Midnight Tales app</strong></li>
+            <li>Paste the code when prompted to complete setup</li>
+            <li>You can safely <strong>close this window</strong></li>
+          </ol>
+        </div>
+
+        ${state ? `
+        <div class="params-section">
+          <div class="code-label" style="margin-bottom:0.5rem;">Additional Parameters</div>
+          <table class="params-table">
+            <tr><td>state</td><td>${escHtml(state)}</td></tr>
+          </table>
+        </div>` : ''}
+
+        <a class="back-link" href="index.html">← Back to Midnight Tales</a>
+      `;
+    } else {
+      // ── NO PARAMS STATE ──
+      card.innerHTML = `
+        <div class="icon-wrap" style="background:rgba(245,158,11,0.12);border:2px solid rgba(245,158,11,0.4);">⚠️</div>
+        <h1>No Authorization Data</h1>
+        <p class="subtitle">This page is the TikTok OAuth callback. It should be opened automatically after you authorize the app.</p>
+
+        <div class="instructions">
+          <h3>How to authorize</h3>
+          <ol>
+            <li>Go back to <strong>Midnight Tales</strong></li>
+            <li>Click <strong>Login with TikTok</strong></li>
+            <li>Approve the permissions on TikTok</li>
+            <li>You'll be redirected here automatically</li>
+          </ol>
+        </div>
+
+        <a class="back-link" href="index.html">← Back to Midnight Tales</a>
+      `;
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function copyCode() {
+      const code = document.getElementById('auth-code').textContent;
+      const btn  = document.getElementById('copy-btn');
+      navigator.clipboard.writeText(code).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Copied!
+        `;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy Code
+          `;
+        }, 3000);
+      }).catch(() => {
+        // Fallback for older browsers
+        const el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        btn.classList.add('copied');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy Code', 3000);
+      });
+    }
+  </script>
+</body>
+</html>
