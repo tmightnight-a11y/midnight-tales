@@ -29,133 +29,200 @@
       padding: 3rem 2.5rem; max-width: 480px; width: 100%;
       text-align: center; position: relative; z-index: 1;
     }
-
-    /* Spinner ring */
     .spinner-wrap { position: relative; width: 5rem; height: 5rem; margin: 0 auto 1.75rem; }
-    .spinner-ring {
-      width: 5rem; height: 5rem; border-radius: 50%;
-      border: 3px solid var(--border); border-top-color: var(--accent2);
-      animation: spin 0.9s linear infinite;
-    }
-    .spinner-icon {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-    }
+    .spinner-ring { width: 5rem; height: 5rem; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--accent2); animation: spin 0.9s linear infinite; }
+    .spinner-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Success ring */
-    .success-wrap {
-      width: 5rem; height: 5rem; border-radius: 50%; margin: 0 auto 1.75rem;
-      background: rgba(34,197,94,0.1); border: 2px solid rgba(34,197,94,0.4);
-      display: flex; align-items: center; justify-content: center; font-size: 2rem;
-    }
-    /* Error ring */
-    .error-wrap {
-      width: 5rem; height: 5rem; border-radius: 50%; margin: 0 auto 1.75rem;
-      background: rgba(239,68,68,0.1); border: 2px solid rgba(239,68,68,0.35);
-      display: flex; align-items: center; justify-content: center; font-size: 2rem;
-    }
-
+    .success-wrap { width: 5rem; height: 5rem; border-radius: 50%; margin: 0 auto 1.75rem; background: rgba(34,197,94,0.1); border: 2px solid rgba(34,197,94,0.4); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .error-wrap { width: 5rem; height: 5rem; border-radius: 50%; margin: 0 auto 1.75rem; background: rgba(239,68,68,0.1); border: 2px solid rgba(239,68,68,0.35); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
     h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
     .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.55; }
-
+    .step-list { text-align: left; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+    .step-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); }
+    .step-dot { width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; transition: all 0.3s; }
+    .step-dot.done { background: var(--green); border-color: var(--green); color: #fff; font-size: 0.7rem; }
+    .step-dot.active { border-color: var(--accent2); animation: pulse 1s ease-in-out infinite; }
+    .step-dot.error { background: var(--red); border-color: var(--red); color: #fff; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(168,85,247,0.4); } 50% { box-shadow: 0 0 0 6px rgba(168,85,247,0); } }
+    .step-item.active { color: var(--text); }
+    .step-item.done { color: var(--green); }
     .progress-bar { height: 4px; background: var(--surface2); border-radius: 999px; overflow: hidden; margin-bottom: 0.75rem; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; width: 0%; transition: width 0.1s linear; }
-    .progress-label { font-size: 0.75rem; color: var(--muted); }
-
-    .info-box {
-      background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
-      border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1.5rem; text-align: left;
-    }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; width: 0%; transition: width 0.4s ease; }
+    .info-box { background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1.25rem; text-align: left; }
     .info-box p { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
     .info-box strong { color: var(--text); }
-
-    .btn-back { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.5rem; color: var(--muted); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
-    .btn-back:hover { color: var(--text); }
-
-    /* Error styles */
     .error-box { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; text-align: left; }
     .error-box p { font-size: 0.82rem; color: var(--muted); }
     .error-box strong { color: var(--red); }
+    .btn-back { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.5rem; color: var(--muted); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+    .btn-back:hover { color: var(--text); }
+    code { font-family: monospace; font-size: 0.78rem; background: rgba(0,0,0,0.4); padding: 0.15rem 0.4rem; border-radius: 4px; color: var(--accent2); word-break: break-all; }
   </style>
 </head>
 <body>
 
   <a href="index.html" class="brand">🌙 Midnight <span>Tales</span></a>
-  <div class="card" id="card"></div>
+  <div class="card" id="card">
+    <div class="spinner-wrap">
+      <div class="spinner-ring"></div>
+      <div class="spinner-icon">🔗</div>
+    </div>
+    <h1>Connecting TikTok...</h1>
+    <p class="subtitle">Exchanging authorization code for access token.</p>
+
+    <div class="step-list">
+      <div class="step-item active" id="s1">
+        <div class="step-dot active" id="s1d">1</div>
+        <span>Received authorization code</span>
+      </div>
+      <div class="step-item" id="s2">
+        <div class="step-dot" id="s2d">2</div>
+        <span>Exchanging code for access token</span>
+      </div>
+      <div class="step-item" id="s3">
+        <div class="step-dot" id="s3d">3</div>
+        <span>Saving credentials</span>
+      </div>
+      <div class="step-item" id="s4">
+        <div class="step-dot" id="s4d">4</div>
+        <span>Redirecting to dashboard</span>
+      </div>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="bar"></div></div>
+  </div>
 
   <script>
+    // ── CONFIG ──────────────────────────────────────────────────────────────
+    const CLIENT_KEY    = 'sbawgqk22o70pdoowx';
+    const CLIENT_SECRET = 'nMJ9x8A3ohOFuLleVAHoyDpcdBn4Bdne'; // update if regenerated
+    const REDIRECT_URI  = 'https://tmightnight-a11y.github.io/midnight-tales/callback';
+    const PROXY         = 'https://corsproxy.io/?';
+    // ────────────────────────────────────────────────────────────────────────
+
     const params  = new URLSearchParams(window.location.search);
     const code    = params.get('code');
     const error   = params.get('error');
     const errDesc = params.get('error_description');
-    const card    = document.getElementById('card');
-    const REDIRECT_DELAY = 3000; // ms
 
     function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    if (error) {
-      // ── ERROR ──
-      card.innerHTML = `
+    function setStep(n, state) {
+      const item = document.getElementById('s' + n);
+      const dot  = document.getElementById('s' + n + 'd');
+      item.className = 'step-item ' + state;
+      dot.className  = 'step-dot ' + state;
+      if (state === 'done')   dot.textContent = '✓';
+      if (state === 'error')  dot.textContent = '✗';
+    }
+
+    function setBar(pct) {
+      document.getElementById('bar').style.width = pct + '%';
+    }
+
+    function showError(title, detail, showBack = true) {
+      document.getElementById('card').innerHTML = `
         <div class="error-wrap">❌</div>
-        <h1>Authorization Failed</h1>
-        <p class="subtitle">${errDesc ? esc(errDesc) : 'TikTok declined the authorization request.'}</p>
-        <div class="error-box">
-          <p><strong>Error:</strong> ${esc(error)}</p>
-          ${errDesc ? `<p style="margin-top:0.35rem;">${esc(errDesc)}</p>` : ''}
-        </div>
-        <div class="info-box">
-          <p>Make sure you <strong>approve all permissions</strong> when TikTok asks. If the problem persists, contact <strong>tmightnight@gmail.com</strong>.</p>
-        </div>
-        <a href="index.html" class="btn-back">← Back to Midnight Tales</a>
-      `;
-
-    } else if (code) {
-      // ── SUCCESS → redirect to dashboard ──
-      card.innerHTML = `
-        <div class="success-wrap">✅</div>
-        <h1>Authorization Successful!</h1>
-        <p class="subtitle">TikTok connected. Redirecting you to your dashboard…</p>
-        <div class="progress-bar"><div class="progress-fill" id="bar"></div></div>
-        <p class="progress-label" id="countdown">Redirecting in 3 seconds…</p>
-        <div class="info-box">
-          <p>Your TikTok account is now linked to <strong>Midnight Tales</strong>. You're ready to create and publish mystery videos.</p>
-        </div>
-      `;
-
-      // Animate progress bar and countdown
-      const bar       = document.getElementById('bar');
-      const countdown = document.getElementById('countdown');
-      const start     = Date.now();
-      const tick = setInterval(() => {
-        const elapsed = Date.now() - start;
-        const pct     = Math.min(100, (elapsed / REDIRECT_DELAY) * 100);
-        bar.style.width = pct + '%';
-        const secs = Math.ceil((REDIRECT_DELAY - elapsed) / 1000);
-        countdown.textContent = secs > 0 ? `Redirecting in ${secs} second${secs !== 1 ? 's' : ''}…` : 'Redirecting…';
-        if (elapsed >= REDIRECT_DELAY) {
-          clearInterval(tick);
-          window.location.href = 'dashboard.html';
-        }
-      }, 50);
-
-    } else {
-      // ── NO PARAMS ──
-      card.innerHTML = `
-        <div class="spinner-wrap">
-          <div class="spinner-ring"></div>
-          <div class="spinner-icon">⚠️</div>
-        </div>
-        <h1>Nothing to process</h1>
-        <p class="subtitle">This page handles your TikTok authorization. It should be opened automatically after you connect your account.</p>
-        <div class="info-box">
-          <p>Go back to <strong>Midnight Tales</strong>, click <strong>Login with TikTok</strong>, approve the permissions, and you'll land here automatically.</p>
-        </div>
-        <a href="index.html" class="btn-back">← Back to Midnight Tales</a>
+        <h1>${title}</h1>
+        <p class="subtitle">${detail}</p>
+        ${showBack ? '<a href="index.html" class="btn-back">← Back to Midnight Tales</a>' : ''}
       `;
     }
+
+    async function run() {
+      // Handle OAuth error from TikTok
+      if (error) {
+        showError('Authorization Failed', errDesc ? esc(errDesc) : 'TikTok declined the request.');
+        return;
+      }
+
+      if (!code) {
+        showError('No Authorization Code',
+          'This page should be opened automatically after TikTok authorization. <a href="index.html" style="color:var(--accent2);">Go back</a> and click Login with TikTok.');
+        return;
+      }
+
+      // Step 1 done
+      setStep(1, 'done');
+      setStep(2, 'active');
+      setBar(25);
+
+      // Exchange code for token
+      let tokenData;
+      try {
+        const body = new URLSearchParams({
+          client_key:    CLIENT_KEY,
+          client_secret: CLIENT_SECRET,
+          code:          code,
+          grant_type:    'authorization_code',
+          redirect_uri:  REDIRECT_URI,
+        });
+
+        const res = await fetch(
+          PROXY + encodeURIComponent('https://open.tiktokapis.com/v2/oauth/token/'),
+          {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    body.toString(),
+          }
+        );
+
+        tokenData = await res.json();
+
+        if (tokenData.error) {
+          throw new Error(tokenData.error_description || tokenData.error);
+        }
+        if (!tokenData.access_token) {
+          throw new Error('No access token in response: ' + JSON.stringify(tokenData));
+        }
+
+      } catch (err) {
+        setStep(2, 'error');
+        document.getElementById('card').innerHTML = `
+          <div class="error-wrap">❌</div>
+          <h1>Token Exchange Failed</h1>
+          <p class="subtitle">Could not exchange the authorization code for an access token.</p>
+          <div class="error-box">
+            <p><strong>Error:</strong> ${esc(String(err.message))}</p>
+          </div>
+          <div class="info-box">
+            <p>This can happen if:<br>
+            • The auth code has already been used (codes are single-use)<br>
+            • The client secret has changed — update <code>CLIENT_SECRET</code> in callback.html<br>
+            • The CORS proxy is temporarily down — try again in a moment</p>
+          </div>
+          <a href="index.html" class="btn-back">← Try again</a>
+        `;
+        return;
+      }
+
+      setStep(2, 'done');
+      setStep(3, 'active');
+      setBar(65);
+
+      // Save to localStorage
+      localStorage.setItem('tt_access_token',  tokenData.access_token);
+      localStorage.setItem('tt_refresh_token', tokenData.refresh_token || '');
+      localStorage.setItem('tt_open_id',       tokenData.open_id || '');
+      localStorage.setItem('tt_scope',         tokenData.scope || '');
+      localStorage.setItem('tt_expires_in',    tokenData.expires_in || '');
+      localStorage.setItem('tt_token_time',    Date.now());
+
+      setStep(3, 'done');
+      setStep(4, 'active');
+      setBar(90);
+
+      // Short pause then redirect
+      await new Promise(r => setTimeout(r, 800));
+      setStep(4, 'done');
+      setBar(100);
+      await new Promise(r => setTimeout(r, 400));
+      window.location.href = 'upload.html';
+    }
+
+    run();
   </script>
 </body>
 </html>

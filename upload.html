@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Video — Midnight Tales</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a26;
+      --border: #2a2a3d; --accent: #7c3aed; --accent2: #a855f7;
+      --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
+      --text: #e2e8f0; --muted: #94a3b8; --radius: 10px;
+      --sidebar-w: 240px; --header-h: 60px;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.25rem; z-index: 200;
+    }
+    .h-left { display: flex; align-items: center; gap: 0.85rem; }
+    .logo { font-size: 1.05rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent2); }
+    .h-divider { width: 1px; height: 1.25rem; background: var(--border); }
+    .h-title { font-size: 0.85rem; color: var(--muted); }
+    .h-right { display: flex; align-items: center; gap: 0.75rem; }
+    .avatar-chip { display: flex; align-items: center; gap: 0.55rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 0.3rem 0.85rem 0.3rem 0.35rem; }
+    .avatar { width: 1.65rem; height: 1.65rem; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+    .avatar-chip span { font-size: 0.82rem; font-weight: 600; }
+    .btn-logout { display: flex; align-items: center; gap: 0.35rem; background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.38rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: var(--header-h); bottom: 0; left: 0; overflow-y: auto; display: flex; flex-direction: column; padding: 1.25rem 0; }
+    .sb-section { padding: 0 0.75rem; margin-bottom: 1.25rem; }
+    .sb-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 0.5rem; margin-bottom: 0.4rem; }
+    .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.65rem; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; cursor: pointer; }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(124,58,237,0.15); color: var(--accent2); }
+    .nav-item svg { flex-shrink: 0; opacity: 0.75; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; }
+    .sb-footer { margin-top: auto; padding: 0 0.75rem 0.75rem; }
+    .connected-pill { display: flex; align-items: center; gap: 0.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.85rem; }
+    .tiktok-icon { width: 1.75rem; height: 1.75rem; background: #010101; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cp-info { flex: 1; min-width: 0; }
+    .cp-name { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cp-status { font-size: 0.68rem; color: var(--green); display: flex; align-items: center; gap: 0.3rem; margin-top: 0.1rem; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* ── MAIN ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; padding: 1.75rem; max-width: calc(100% - var(--sidebar-w)); }
+
+    /* ── PAGE HEADER ── */
+    .page-header { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.75rem; }
+    .back-link { display: flex; align-items: center; gap: 0.35rem; color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--text); }
+    .page-title { font-size: 1.4rem; font-weight: 700; }
+
+    /* ── UPLOAD GRID ── */
+    .upload-grid { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
+    @media (max-width: 960px) { .upload-grid { grid-template-columns: 1fr; } }
+
+    /* ── CARD ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .card-title { font-size: 0.9rem; font-weight: 700; }
+    .card-body { padding: 1.25rem; }
+
+    /* ── DROP ZONE ── */
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius);
+      padding: 3rem 1.5rem; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent2); background: rgba(124,58,237,0.05); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .drop-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .drop-sub { font-size: 0.8rem; color: var(--muted); }
+    .drop-sub span { color: var(--accent2); font-weight: 600; }
+
+    /* ── FILE SELECTED ── */
+    .file-info { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem; }
+    .file-icon { width: 2.5rem; height: 2.5rem; background: rgba(124,58,237,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .file-details { flex: 1; min-width: 0; }
+    .file-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-size { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+    .file-change { background: none; border: none; color: var(--accent2); font-size: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .file-change:hover { opacity: 0.75; }
+
+    /* ── FORM ── */
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .form-input, .form-select, .form-textarea {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      padding: 0.6rem 0.85rem; border-radius: 8px; font-size: 0.875rem; font-family: inherit;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; }
+    .form-textarea { resize: vertical; line-height: 1.5; min-height: 80px; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+    .char-count { font-size: 0.72rem; color: var(--muted); text-align: right; margin-top: 0.2rem; }
+
+    /* ── PRIVACY NOTICE ── */
+    .privacy-notice {
+      background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem;
+      font-size: 0.78rem; color: var(--muted); display: flex; align-items: flex-start; gap: 0.5rem;
+    }
+    .privacy-notice strong { color: var(--text); }
+
+    /* ── UPLOAD BUTTON ── */
+    .btn-upload {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      background: #010101; color: #fff; border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.85rem 1.5rem; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    }
+    .btn-upload:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+    .btn-upload:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* ── RIGHT COL: STATUS ── */
+    .status-card { position: sticky; top: calc(var(--header-h) + 1.75rem); }
+
+    .status-idle { text-align: center; padding: 2rem 1.5rem; color: var(--muted); }
+    .status-idle .idle-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .status-idle p { font-size: 0.85rem; }
+
+    /* Progress steps */
+    .progress-steps { padding: 1.25rem; display: flex; flex-direction: column; gap: 0; }
+    .p-step { display: flex; align-items: flex-start; gap: 0.75rem; padding-bottom: 1.1rem; position: relative; }
+    .p-step:last-child { padding-bottom: 0; }
+    .p-step:not(:last-child)::after {
+      content: ''; position: absolute; left: 0.65rem; top: 1.4rem; bottom: 0;
+      width: 2px; background: var(--border); z-index: 0;
+    }
+    .p-step.done::after { background: var(--green); }
+    .p-step.active::after { background: linear-gradient(180deg, var(--accent2), var(--border)); }
+    .p-dot {
+      width: 1.35rem; height: 1.35rem; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; font-weight: 800; border: 2px solid var(--border);
+      background: var(--surface2); position: relative; z-index: 1;
+      transition: all 0.3s;
+    }
+    .p-step.done .p-dot { background: var(--green); border-color: var(--green); color: #fff; font-size: 0.65rem; }
+    .p-step.active .p-dot { border-color: var(--accent2); background: rgba(168,85,247,0.15); animation: pulse 1.2s ease-in-out infinite; }
+    .p-step.error .p-dot { background: var(--red); border-color: var(--red); color: #fff; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(168,85,247,0.4); } 50% { box-shadow: 0 0 0 5px rgba(168,85,247,0); } }
+    .p-info { flex: 1; padding-top: 0.05rem; }
+    .p-label { font-size: 0.82rem; font-weight: 600; color: var(--muted); transition: color 0.3s; }
+    .p-step.active .p-label { color: var(--text); }
+    .p-step.done .p-label { color: var(--green); }
+    .p-step.error .p-label { color: var(--red); }
+    .p-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* Upload progress bar */
+    .upload-bar-wrap { margin: 0.75rem 0; }
+    .upload-bar { height: 6px; background: var(--surface2); border-radius: 999px; overflow: hidden; }
+    .upload-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; width: 0%; transition: width 0.2s ease; }
+    .upload-pct { font-size: 0.75rem; color: var(--muted); text-align: right; margin-top: 0.25rem; }
+
+    /* Success state */
+    .success-block { text-align: center; padding: 1.5rem; }
+    .success-block .s-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .success-block h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .success-block p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-done { display: inline-flex; align-items: center; gap: 0.45rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border: none; padding: 0.65rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: opacity 0.2s; }
+    .btn-done:hover { opacity: 0.9; }
+    .btn-upload-another { display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: 1px solid var(--border); color: var(--muted); padding: 0.6rem 1.1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-top: 0.6rem; transition: border-color 0.2s, color 0.2s; }
+    .btn-upload-another:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── NOT LOGGED IN ── */
+    .not-logged { text-align: center; max-width: 400px; margin: 5rem auto; }
+    .not-logged .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .not-logged h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .not-logged p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .btn-connect { display: inline-flex; align-items: center; gap: 0.6rem; background: #010101; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-connect:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; max-width: 100%; } }
+    @media (max-width: 600px) { .main { padding: 1rem; } .h-title { display: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="h-left">
+      <a href="index.html" class="logo">🌙 Midnight <span>Tales</span></a>
+      <div class="h-divider"></div>
+      <span class="h-title">Upload to TikTok</span>
+    </div>
+    <div class="h-right">
+      <div class="avatar-chip">
+        <div class="avatar">MT</div>
+        <span id="header-handle">@midnight_tales</span>
+      </div>
+      <button class="btn-logout" id="logout-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Menu</div>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          My Videos
+        </a>
+        <a class="nav-item active" href="upload.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload Video
+        </a>
+        <a class="nav-item" href="create.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create New
+        </a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Account</div>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Settings
+        </a>
+        <a class="nav-item" href="dashboard.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Connected Accounts
+        </a>
+      </div>
+      <div class="sb-footer">
+        <div class="connected-pill">
+          <div class="tiktok-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+          </div>
+          <div class="cp-info">
+            <div class="cp-name" id="sidebar-handle">@midnight_tales</div>
+            <div class="cp-status"><span class="dot"></span> Connected</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="main-content">
+
+      <!-- NOT LOGGED IN (shown by JS if no token) -->
+      <div id="not-logged" style="display:none;">
+        <div class="not-logged">
+          <div class="icon">🔒</div>
+          <h2>Connect TikTok First</h2>
+          <p>You need to log in with TikTok before you can upload videos.</p>
+          <a class="btn-connect"
+            href="https://www.tiktok.com/v2/auth/authorize/?client_key=sbawgqk22o70pdoowx&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=https://tmightnight-a11y.github.io/midnight-tales/callback&state=auth">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+            Login with TikTok
+          </a>
+        </div>
+      </div>
+
+      <!-- UPLOAD UI (shown when logged in) -->
+      <div id="upload-ui" style="display:none;">
+
+        <div class="page-header">
+          <a href="dashboard.html" class="back-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Dashboard
+          </a>
+          <div class="h-divider" style="height:1rem;"></div>
+          <h1 class="page-title">📤 Upload to TikTok</h1>
+        </div>
+
+        <div class="upload-grid">
+
+          <!-- LEFT: FORM -->
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Video File</span>
+              </div>
+              <div class="card-body">
+
+                <!-- Drop zone -->
+                <div class="drop-zone" id="drop-zone">
+                  <input type="file" id="file-input" accept="video/mp4,video/mov,video/avi,video/webm,video/quicktime,.mp4,.mov,.avi,.webm" />
+                  <div class="drop-icon">🎬</div>
+                  <div class="drop-title">Drop your video here</div>
+                  <p class="drop-sub">or <span>browse files</span> · MP4, MOV, AVI, WebM</p>
+                  <p class="drop-sub" style="margin-top:0.35rem;">Max 128 MB · Min 3 seconds</p>
+                </div>
+
+                <!-- File selected info (hidden until file chosen) -->
+                <div class="file-info" id="file-info" style="display:none;">
+                  <div class="file-icon">🎬</div>
+                  <div class="file-details">
+                    <div class="file-name" id="file-name">video.mp4</div>
+                    <div class="file-size" id="file-size">0 MB</div>
+                  </div>
+                  <button class="file-change" onclick="resetFile()">Change</button>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:1.25rem;">
+              <div class="card-header">
+                <span class="card-title">Post Details</span>
+              </div>
+              <div class="card-body">
+
+                <div class="form-group">
+                  <label class="form-label">Title / Caption</label>
+                  <input type="text" class="form-input" id="title-input" placeholder="The Abandoned House on Elm Street 🏚️" maxlength="150" oninput="updateCount(this, 'title-count', 150)" />
+                  <div class="char-count"><span id="title-count">0</span>/150</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Visibility</label>
+                  <select class="form-select" id="privacy-select">
+                    <option value="SELF_ONLY" selected>🔒 Private (Me only) — recommended for testing</option>
+                    <option value="MUTUAL_FOLLOW_FRIENDS">👥 Friends only</option>
+                    <option value="PUBLIC_TO_EVERYONE">🌍 Public</option>
+                  </select>
+                  <p class="form-hint">During sandbox testing, keep this set to <strong>Private</strong> so test videos don't appear publicly.</p>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Disable interactions</label>
+                  <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;cursor:pointer;color:var(--muted);">
+                      <input type="checkbox" id="no-duet" style="accent-color:var(--accent2);"> Disable Duet
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;cursor:pointer;color:var(--muted);">
+                      <input type="checkbox" id="no-stitch" style="accent-color:var(--accent2);"> Disable Stitch
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;cursor:pointer;color:var(--muted);">
+                      <input type="checkbox" id="no-comment" style="accent-color:var(--accent2);"> Disable Comments
+                    </label>
+                  </div>
+                </div>
+
+                <div class="privacy-notice">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:0.1rem;color:var(--accent2);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span>Videos are uploaded via TikTok's official <strong>Content Posting API</strong> using the access token from your OAuth login. Your credentials are stored locally in your browser only.</span>
+                </div>
+
+                <button class="btn-upload" id="upload-btn" disabled onclick="startUpload()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.77a4.85 4.85 0 0 1-1.02-.08z" fill="#fff"/></svg>
+                  Upload to TikTok
+                </button>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: STATUS -->
+          <div class="status-card">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Upload Status</span>
+              </div>
+
+              <!-- IDLE -->
+              <div id="status-idle">
+                <div class="status-idle">
+                  <div class="idle-icon">📡</div>
+                  <p>Select a video and fill in the details to get started.</p>
+                </div>
+              </div>
+
+              <!-- IN PROGRESS -->
+              <div id="status-progress" style="display:none;">
+                <div class="progress-steps">
+                  <div class="p-step" id="ps1">
+                    <div class="p-dot" id="pd1">1</div>
+                    <div class="p-info">
+                      <div class="p-label">Initialising upload</div>
+                      <div class="p-sub" id="ps1-sub">Requesting upload URL from TikTok</div>
+                    </div>
+                  </div>
+                  <div class="p-step" id="ps2">
+                    <div class="p-dot" id="pd2">2</div>
+                    <div class="p-info">
+                      <div class="p-label">Uploading video</div>
+                      <div class="p-sub" id="ps2-sub">Waiting…</div>
+                      <div class="upload-bar-wrap" id="upload-bar-wrap" style="display:none;">
+                        <div class="upload-bar"><div class="upload-bar-fill" id="upload-bar-fill"></div></div>
+                        <div class="upload-pct" id="upload-pct">0%</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-step" id="ps3">
+                    <div class="p-dot" id="pd3">3</div>
+                    <div class="p-info">
+                      <div class="p-label">TikTok processing</div>
+                      <div class="p-sub" id="ps3-sub">Waiting…</div>
+                    </div>
+                  </div>
+                  <div class="p-step" id="ps4">
+                    <div class="p-dot" id="pd4">4</div>
+                    <div class="p-info">
+                      <div class="p-label">Published</div>
+                      <div class="p-sub" id="ps4-sub">Waiting…</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SUCCESS -->
+              <div id="status-success" style="display:none;">
+                <div class="success-block">
+                  <div class="s-icon">🎉</div>
+                  <h3>Video Uploaded!</h3>
+                  <p>Your video has been sent to TikTok successfully. It may take a few minutes to process and appear in your account.</p>
+                  <a href="dashboard.html" class="btn-done">View Dashboard</a><br>
+                  <button class="btn-upload-another" onclick="resetAll()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                    Upload Another
+                  </button>
+                </div>
+              </div>
+
+              <!-- ERROR -->
+              <div id="status-error" style="display:none;">
+                <div class="success-block">
+                  <div class="s-icon">❌</div>
+                  <h3>Upload Failed</h3>
+                  <p id="error-msg">Something went wrong. Please try again.</p>
+                  <button class="btn-upload-another" onclick="resetAll()" style="margin-top:0;">Try Again</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /upload-ui -->
+
+    </main>
+  </div>
+
+  <script>
+    // ── CONFIG ───────────────────────────────────────────────────────────────
+    const PROXY = 'https://corsproxy.io/?';
+    const TIKTOK_API = 'https://open.tiktokapis.com';
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let selectedFile = null;
+    let uploadInProgress = false;
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+    const token   = localStorage.getItem('tt_access_token');
+    const openId  = localStorage.getItem('tt_open_id');
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    if (!token) {
+      document.getElementById('not-logged').style.display = 'block';
+    } else {
+      document.getElementById('upload-ui').style.display = 'block';
+      // Show open_id in header if available
+      if (openId) {
+        const handle = openId.substring(0, 12) + '…';
+        document.getElementById('header-handle').textContent = handle;
+        document.getElementById('sidebar-handle').textContent = handle;
+      }
+    }
+
+    // ── FILE SELECTION ────────────────────────────────────────────────────────
+    const fileInput = document.getElementById('file-input');
+    const dropZone  = document.getElementById('drop-zone');
+
+    fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('video/')) {
+        alert('Please select a video file.');
+        return;
+      }
+      if (file.size > 128 * 1024 * 1024) {
+        alert('File is too large. Maximum size is 128 MB.');
+        return;
+      }
+      selectedFile = file;
+      document.getElementById('drop-zone').style.display = 'none';
+      document.getElementById('file-info').style.display = 'flex';
+      document.getElementById('file-name').textContent = file.name;
+      document.getElementById('file-size').textContent = formatBytes(file.size);
+      updateUploadBtn();
+    }
+
+    function resetFile() {
+      selectedFile = null;
+      fileInput.value = '';
+      document.getElementById('drop-zone').style.display = 'block';
+      document.getElementById('file-info').style.display = 'none';
+      updateUploadBtn();
+    }
+
+    function resetAll() {
+      resetFile();
+      uploadInProgress = false;
+      showStatus('idle');
+      document.getElementById('upload-btn').disabled = true;
+      // Reset progress steps
+      ['ps1','ps2','ps3','ps4'].forEach(id => {
+        document.getElementById(id).className = 'p-step';
+        const n = id[2];
+        document.getElementById('pd' + n).textContent = n;
+      });
+      document.getElementById('upload-bar-wrap').style.display = 'none';
+      document.getElementById('upload-bar-fill').style.width = '0%';
+    }
+
+    function updateUploadBtn() {
+      const hasFile  = !!selectedFile;
+      const hasTitle = document.getElementById('title-input').value.trim().length > 0;
+      document.getElementById('upload-btn').disabled = !(hasFile && !uploadInProgress);
+    }
+
+    document.getElementById('title-input').addEventListener('input', updateUploadBtn);
+
+    function updateCount(el, countId, max) {
+      document.getElementById(countId).textContent = el.value.length;
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    // ── STATUS UI ─────────────────────────────────────────────────────────────
+    function showStatus(state) {
+      ['idle','progress','success','error'].forEach(s => {
+        document.getElementById('status-' + s).style.display = s === state ? 'block' : 'none';
+      });
+    }
+
+    function setPS(n, state, sub) {
+      const step = document.getElementById('ps' + n);
+      const dot  = document.getElementById('pd' + n);
+      step.className = 'p-step ' + state;
+      if (state === 'done')  dot.textContent = '✓';
+      if (state === 'error') dot.textContent = '✗';
+      if (sub) document.getElementById('ps' + n + '-sub').textContent = sub;
+    }
+
+    function setUploadProgress(pct) {
+      document.getElementById('upload-bar-wrap').style.display = 'block';
+      document.getElementById('upload-bar-fill').style.width = pct + '%';
+      document.getElementById('upload-pct').textContent = Math.round(pct) + '%';
+    }
+
+    // ── UPLOAD FLOW ────────────────────────────────────────────────────────────
+    async function startUpload() {
+      if (!selectedFile || uploadInProgress) return;
+      uploadInProgress = true;
+      document.getElementById('upload-btn').disabled = true;
+      showStatus('progress');
+
+      const title       = document.getElementById('title-input').value.trim();
+      const privacy     = document.getElementById('privacy-select').value;
+      const noDuet      = document.getElementById('no-duet').checked;
+      const noStitch    = document.getElementById('no-stitch').checked;
+      const noComment   = document.getElementById('no-comment').checked;
+
+      // ── STEP 1: Init upload ──────────────────────────────────────────────
+      setPS(1, 'active', 'Requesting upload URL from TikTok…');
+      let publishId, uploadUrl;
+
+      try {
+        const initBody = {
+          post_info: {
+            title:            title || 'Midnight Tales Mystery Story',
+            privacy_level:    privacy,
+            disable_duet:     noDuet,
+            disable_stitch:   noStitch,
+            disable_comment:  noComment,
+          },
+          source_info: {
+            source:            'FILE_UPLOAD',
+            video_size:        selectedFile.size,
+            chunk_size:        selectedFile.size,
+            total_chunk_count: 1,
+          },
+        };
+
+        const initRes = await fetch(
+          PROXY + encodeURIComponent(TIKTOK_API + '/v2/post/publish/video/init/'),
+          {
+            method:  'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type':  'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(initBody),
+          }
+        );
+
+        const initData = await initRes.json();
+
+        if (initData.error && initData.error.code !== 'ok') {
+          throw new Error(initData.error.message || JSON.stringify(initData.error));
+        }
+
+        publishId = initData.data?.publish_id;
+        uploadUrl = initData.data?.upload_url;
+
+        if (!uploadUrl) throw new Error('No upload URL returned: ' + JSON.stringify(initData));
+
+        setPS(1, 'done', 'Upload URL received');
+
+      } catch (err) {
+        setPS(1, 'error', err.message);
+        showUploadError('Failed to initialise upload: ' + err.message);
+        return;
+      }
+
+      // ── STEP 2: Upload video file ─────────────────────────────────────────
+      setPS(2, 'active', 'Uploading ' + formatBytes(selectedFile.size) + '…');
+      setUploadProgress(0);
+
+      try {
+        await uploadWithProgress(uploadUrl, selectedFile);
+        setPS(2, 'done', 'Upload complete');
+        setUploadProgress(100);
+
+      } catch (err) {
+        setPS(2, 'error', err.message);
+        showUploadError('Upload failed: ' + err.message);
+        return;
+      }
+
+      // ── STEP 3: Poll for processing status ────────────────────────────────
+      setPS(3, 'active', 'TikTok is processing your video…');
+
+      try {
+        await pollStatus(publishId);
+        setPS(3, 'done', 'Processing complete');
+      } catch (err) {
+        setPS(3, 'error', err.message);
+        showUploadError('Processing failed: ' + err.message);
+        return;
+      }
+
+      // ── STEP 4: Done ──────────────────────────────────────────────────────
+      setPS(4, 'done', 'Video is live on TikTok');
+      uploadInProgress = false;
+      setTimeout(() => showStatus('success'), 600);
+    }
+
+    // XHR upload with real progress (fetch doesn't support upload progress)
+    function uploadWithProgress(url, file) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener('progress', e => {
+          if (e.lengthComputable) setUploadProgress((e.loaded / e.total) * 100);
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error('HTTP ' + xhr.status + ': ' + xhr.responseText));
+          }
+        });
+
+        xhr.addEventListener('error', () => reject(new Error('Network error during upload')));
+        xhr.addEventListener('abort', () => reject(new Error('Upload aborted')));
+
+        xhr.open('PUT', url);
+        xhr.setRequestHeader('Content-Range', `bytes 0-${file.size - 1}/${file.size}`);
+        xhr.setRequestHeader('Content-Type', 'video/mp4');
+        xhr.send(file);
+      });
+    }
+
+    // Poll /v2/post/publish/status/fetch/ until done or error
+    async function pollStatus(publishId, maxAttempts = 20) {
+      for (let i = 0; i < maxAttempts; i++) {
+        await new Promise(r => setTimeout(r, 3000)); // wait 3s between polls
+
+        const res = await fetch(
+          PROXY + encodeURIComponent(TIKTOK_API + '/v2/post/publish/status/fetch/'),
+          {
+            method:  'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type':  'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({ publish_id: publishId }),
+          }
+        );
+
+        const data = await res.json();
+        const status = data.data?.status;
+
+        document.getElementById('ps3-sub').textContent =
+          'Status: ' + (status || 'checking…') + ' (attempt ' + (i + 1) + ')';
+
+        if (status === 'PUBLISH_COMPLETE') return;
+        if (status === 'FAILED') throw new Error(data.data?.fail_reason || 'TikTok reported failure');
+        // PROCESSING_UPLOAD, SEND_TO_USER_INBOX, etc. → keep polling
+      }
+      throw new Error('Timed out waiting for TikTok to process the video');
+    }
+
+    function showUploadError(msg) {
+      uploadInProgress = false;
+      document.getElementById('error-msg').textContent = msg;
+      setTimeout(() => showStatus('error'), 500);
+      document.getElementById('upload-btn').disabled = false;
+    }
+  </script>
+
+</body>
+</html>
