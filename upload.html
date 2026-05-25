@@ -485,7 +485,7 @@
       // Show real display name / username if available
       const displayName = localStorage.getItem('tt_display_name');
       const username    = localStorage.getItem('tt_username');
-      const label = displayName || (username ? '@' + username : null) || 'Connected';
+      const label = displayName || (username ? '@' + username : null) || '@midnight_tales';
       document.getElementById('header-handle').textContent = label;
       document.getElementById('sidebar-handle').textContent = label;
     }
