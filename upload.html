@@ -482,12 +482,12 @@
       document.getElementById('not-logged').style.display = 'block';
     } else {
       document.getElementById('upload-ui').style.display = 'block';
-      // Show open_id in header if available
-      if (openId) {
-        const handle = openId.substring(0, 12) + '…';
-        document.getElementById('header-handle').textContent = handle;
-        document.getElementById('sidebar-handle').textContent = handle;
-      }
+      // Show real display name / username if available
+      const displayName = localStorage.getItem('tt_display_name');
+      const username    = localStorage.getItem('tt_username');
+      const label = displayName || (username ? '@' + username : null) || 'Connected';
+      document.getElementById('header-handle').textContent = label;
+      document.getElementById('sidebar-handle').textContent = label;
     }
 
     // ── FILE SELECTION ────────────────────────────────────────────────────────

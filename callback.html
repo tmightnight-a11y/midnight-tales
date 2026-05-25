@@ -200,15 +200,35 @@
 
       setStep(2, 'done');
       setStep(3, 'active');
-      setBar(65);
+      setBar(55);
 
-      // Save to localStorage
+      // Save tokens to localStorage
       localStorage.setItem('tt_access_token',  tokenData.access_token);
       localStorage.setItem('tt_refresh_token', tokenData.refresh_token || '');
       localStorage.setItem('tt_open_id',       tokenData.open_id || '');
       localStorage.setItem('tt_scope',         tokenData.scope || '');
       localStorage.setItem('tt_expires_in',    tokenData.expires_in || '');
       localStorage.setItem('tt_token_time',    Date.now());
+
+      // Fetch real display name from TikTok user info API
+      try {
+        const userRes = await fetch(
+          PROXY + encodeURIComponent('https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,avatar_url,username'),
+          {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + tokenData.access_token },
+          }
+        );
+        const userData = await userRes.json();
+        const user = userData.data?.user;
+        if (user) {
+          localStorage.setItem('tt_display_name', user.display_name || '');
+          localStorage.setItem('tt_username',     user.username     || '');
+          localStorage.setItem('tt_avatar_url',   user.avatar_url   || '');
+        }
+      } catch (_) {
+        // Non-fatal — display name just won't show
+      }
 
       setStep(3, 'done');
       setStep(4, 'active');
